@@ -30,7 +30,7 @@ class Student:
         else:
             return None # У студента еще нет оценок
 
-    def __lt__(self, other): # пока добавил просто так
+    def __lt__(self, other):
 
         first_student = self.average_rate_student()
         second_student = other.average_rate_student()
@@ -41,8 +41,6 @@ class Student:
         return first_student < second_student
 
     def __gt__(self, other):
-    # сейчас именно этот метод используется в функциях comperison для студентов и лекторов
-    # потому что это удобнее для восприятия, чем __it__ (вопрос: первый больше второго?)
 
         first_student = self.average_rate_student()
         second_student = other.average_rate_student()
@@ -52,7 +50,7 @@ class Student:
 
         return first_student > second_student
 
-    def __eq__(self, other): # пока добавил просто так
+    def __eq__(self, other):
 
         first_student = self.average_rate_student()
         second_student = other.average_rate_student()
@@ -68,15 +66,24 @@ class Student:
 Курсы в процессе обучения: {", ".join(self.courses_in_progress)} \n\
 Завершенные курсы: {", ".join(self.finished_courses)}\n'
 
-def comparison_students(student1, student2):
+def comparison_students(student1, operator, student2):
     try:
-        comparison = student1 > student2
-        if comparison:
+        if operator == '>':
+            result = student1 > student2
+        elif operator == '<':
+            result = student1 < student2
+        elif operator == '==':
+            result = student1 == student2
+        else:
+            raise ValueError(f'Оператор "{operator}" некорректен.')
+
+        if result:
             print('Верно')
         else:
             print('Неверно')
     except ValueError as e:
         print(e)
+
 
 def average_rate_student_by_course(students, course):
     total_sum = 0
@@ -117,7 +124,7 @@ class Lecturer(Mentor):
         else:
             return None # У лектора еще нет оценок
 
-    def __lt__(self, other): # пока добавил просто так
+    def __lt__(self, other):
 
         first_lecturer = self.average_rate_lecture()
         second_lecturer = other.average_rate_lecture()
@@ -128,8 +135,6 @@ class Lecturer(Mentor):
         return first_lecturer < second_lecturer
 
     def __gt__(self, other):
-    # сейчас именно этот метод используется в функциях comperison для студентов и лекторов
-    # потому что это удобнее для восприятия, чем __it__ (вопрос: первый больше второго?)
 
         first_lecturer = self.average_rate_lecture()
         second_lecturer = other.average_rate_lecture()
@@ -139,7 +144,7 @@ class Lecturer(Mentor):
 
         return first_lecturer > second_lecturer
 
-    def __eq__(self, other): # пока добавил просто так
+    def __eq__(self, other):
 
         first_lecturer = self.average_rate_lecture()
         second_lecturer = other.average_rate_lecture()
@@ -153,15 +158,25 @@ class Lecturer(Mentor):
         return f'Имя: {self.name}\nФамилия: {self.surname}\n\
 Средняя оценка за лекции: {self.average_rate_lecture()}\n'
 
-def comparison_lecturers(lecturer1, lecturer2):
+def comparison_lecturers(lecturer1, operator, lecturer2):
+
     try:
-        comparison = lecturer1 > lecturer2
-        if comparison:
+        if operator == '>':
+            result = lecturer1 > lecturer2
+        elif operator == '<':
+            result = lecturer1 < lecturer2
+        elif operator == '==':
+            result = lecturer1 == lecturer2
+        else:
+            raise ValueError(f'Оператор "{operator}" некорректен.')
+
+        if result:
             print('Верно')
         else:
             print('Неверно')
     except ValueError as e:
         print(e)
+
 
 def average_rate_lecturer_by_course(lecturers, course):
     total_sum = 0
@@ -176,7 +191,7 @@ def average_rate_lecturer_by_course(lecturers, course):
     if count > 0:
         return f'Средня оценка лекторов на курсе: "{course}" - {round(total_sum / count, 1)} балла'
     else:
-        return f'Нет оценок по курсу: "{course}".'
+        return f'У лекторов нет оценок по курсу: "{course}".'
 
 class Reviewer(Mentor):
     def __init__(self, name, surname):
@@ -263,8 +278,8 @@ student.rate_lecture(some_lecturer, 'Python', 8)
 student.rate_lecture(lecturer, 'Python', 8)
 student.rate_lecture(some_lecturer, 'Python', 8)
 
-comparison_students(student, some_student)
-comparison_lecturers(lecturer, some_lecturer)
+comparison_students(student, '<', some_student)
+comparison_lecturers(lecturer, '>', some_lecturer)
 
 # наполнение для проверки работоспособности кода к заданию №4
 # второй экземпляр классов (Student, Lecturer и Reviewer) были созданы в рамках задания №3
@@ -276,5 +291,3 @@ reviewer.rate_student(some_student, 'Git', 9)
 
 print(average_rate_student_by_course([student, some_student], 'Python'))
 print(average_rate_lecturer_by_course([lecturer, some_lecturer], 'Git'))
-
-
