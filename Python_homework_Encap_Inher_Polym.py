@@ -42,6 +42,7 @@ class Student:
 
     def __gt__(self, other):
     # сейчас именно этот метод используется в функциях comperison для студентов и лекторов
+    # потому что это удобнее для восприятия, чем __it__ (вопрос: первый больше второго?)
 
         first_student = self.average_rate_student()
         second_student = other.average_rate_student()
@@ -76,6 +77,21 @@ def comparison_students(student1, student2):
             print('Неверно')
     except ValueError as e:
         print(e)
+
+def average_rate_student_by_course(students, course):
+    total_sum = 0
+    count = 0
+
+    for student in students:
+        if course in student.grades:
+            all_grades = student.grades.get(course, [])
+            total_sum += sum(all_grades)
+            count += len(all_grades)
+
+    if count > 0:
+        return f'Средня оценка студентов на курсе: "{course}" - {round(total_sum / count, 1)} балла'
+    else:
+        return f'У студентов нет оценок по курсу: "{course}".'
 
 class Mentor:
     def __init__(self, name, surname):
@@ -113,6 +129,7 @@ class Lecturer(Mentor):
 
     def __gt__(self, other):
     # сейчас именно этот метод используется в функциях comperison для студентов и лекторов
+    # потому что это удобнее для восприятия, чем __it__ (вопрос: первый больше второго?)
 
         first_lecturer = self.average_rate_lecture()
         second_lecturer = other.average_rate_lecture()
@@ -145,6 +162,21 @@ def comparison_lecturers(lecturer1, lecturer2):
             print('Неверно')
     except ValueError as e:
         print(e)
+
+def average_rate_lecturer_by_course(lecturers, course):
+    total_sum = 0
+    count = 0
+
+    for lecturer in lecturers:
+        if course in lecturer.grades:
+            all_grades = lecturer.grades.get(course, [])
+            total_sum += sum(all_grades)
+            count += len(all_grades)
+
+    if count > 0:
+        return f'Средня оценка лекторов на курсе: "{course}" - {round(total_sum / count, 1)} балла'
+    else:
+        return f'Нет оценок по курсу: "{course}".'
 
 class Reviewer(Mentor):
     def __init__(self, name, surname):
@@ -182,9 +214,9 @@ lecturer = Lecturer('Иван', 'Иванов')
 reviewer = Reviewer('Пётр', 'Петров')
 student = Student('Алёхина', 'Ольга', 'Ж')
 
-student.courses_in_progress += ['Python', 'Java']
-lecturer.courses_attached += ['Python', 'C++']
-reviewer.courses_attached += ['Python', 'C++']
+student.courses_in_progress += ['Python', 'Git', 'C++']
+lecturer.courses_attached += ['Python', 'C++', 'Java', 'Git']
+reviewer.courses_attached += ['Python', 'C++', 'Java', 'Git']
 
 print(student.rate_lecture(lecturer, 'Python', 7))  # None
 print(student.rate_lecture(lecturer, 'Java', 8))  # Ошибка
@@ -199,7 +231,7 @@ some_student.courses_in_progress += ['Python', 'Git']
 some_lecturer = Lecturer('Some', 'Buddy')
 some_lecturer.courses_attached += ['Python', 'Git']
 some_reviewer = Reviewer('Some', 'Buddy')
-some_reviewer.courses_attached += ['Python', 'Git']
+some_reviewer.courses_attached += ['Python', 'Git', 'Java']
 print(some_reviewer)
 
 some_student.rate_lecture(some_lecturer, 'Python', 10)
@@ -221,13 +253,28 @@ some_reviewer.rate_student(some_student, 'Git', 10)
 some_reviewer.rate_student(some_student, 'Git', 10)
 print(some_student)
 
+some_reviewer.rate_student(student, 'Python', 9)
 some_reviewer.rate_student(student, 'Python', 10)
-some_reviewer.rate_student(student, 'Python', 10)
-some_reviewer.rate_student(student, 'Python', 10)
+some_reviewer.rate_student(student, 'Java', 10)
+some_reviewer.rate_student(student, 'Java', 10)
 
-some_student.rate_lecture(lecturer, 'Python', 7)
-some_student.rate_lecture(lecturer, 'Python', 7)
-some_student.rate_lecture(lecturer, 'Python', 7)
+student.rate_lecture(lecturer, 'Python', 8)
+student.rate_lecture(some_lecturer, 'Python', 8)
+student.rate_lecture(lecturer, 'Python', 8)
+student.rate_lecture(some_lecturer, 'Python', 8)
 
 comparison_students(student, some_student)
 comparison_lecturers(lecturer, some_lecturer)
+
+# наполнение для проверки работоспособности кода к заданию №4
+# второй экземпляр классов (Student, Lecturer и Reviewer) были созданы в рамках задания №3
+
+reviewer.rate_student(student, 'Python', 9)
+reviewer.rate_student(some_student, 'Python', 9)
+reviewer.rate_student(student, 'C++', 9)
+reviewer.rate_student(some_student, 'Git', 9)
+
+print(average_rate_student_by_course([student, some_student], 'Python'))
+print(average_rate_lecturer_by_course([lecturer, some_lecturer], 'Git'))
+
+
